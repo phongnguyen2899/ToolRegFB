@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AddLdPlayerToWPF", "AddLdPlayerToWPF.csproj", "{BF642F95-0AD7-4C57-9A54-9768B8D6711F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BF642F95-0AD7-4C57-9A54-9768B8D6711F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF642F95-0AD7-4C57-9A54-9768B8D6711F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BF642F95-0AD7-4C57-9A54-9768B8D6711F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF642F95-0AD7-4C57-9A54-9768B8D6711F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A3B88E4C-3777-4B98-BF1D-9CC0EB9814FA}
+	EndGlobalSection
+EndGlobal
