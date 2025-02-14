@@ -112,6 +112,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\Person.cs" />
     <Compile Include="Ultil\CommonFuntion.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

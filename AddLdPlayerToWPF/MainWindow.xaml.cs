@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -20,6 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using AddLdPlayerToWPF.Models;
 using AddLdPlayerToWPF.Ultil;
 using Auto_LDPlayer;
 using Auto_LDPlayer.Enums;
@@ -48,16 +51,20 @@ namespace AddLdPlayerToWPF
         private const int WS_THICKFRAME = 0x00040000;
         private const int WS_CAPTION = 0x00C00000;
         private const int WS_CHILD = 0x40000000;
+
+        public ObservableCollection<Account> AccountList;
         public MainWindow()
         {
             InitializeComponent();
             initLd();
+            AccountList = new ObservableCollection<Account>();
+            dtgData.ItemsSource = AccountList;
         }
 
         public void initLd()
         {
-            LDPlayer.PathLD = @"D:\work\devops\HTTTN\tool\LDPlayer\ldconsole.exe";
-            KAutoHelper.ADBHelper.SetADBFolderPath(@"D:\work\devops\HTTTN\tool\LDPlayer");
+            LDPlayer.PathLD = @"E:\Tool\LDPlayer\LDPlayer9\ldconsole.exe";
+            KAutoHelper.ADBHelper.SetADBFolderPath(@"E:\Tool\LDPlayer\LDPlayer9");
             //LDPlayer.Open(LDType.Name, "LDPlayer");
             //await Task.Delay(1000);
             //LDPlayer.Open(LDType.Name, "LDPlayer-1");
@@ -106,12 +113,19 @@ namespace AddLdPlayerToWPF
         }
         public void RunNow(string ldName)
         {
+            var newAccount = new Account()
+            {
+                Status = "Opening LD..."
+            };
+            base.Dispatcher.Invoke(new Action(delegate ()
+            {
+                AccountList.Add(newAccount);
+            }));
             // đóng phiên cũ
             LDPlayer.Close(LDType.Name, ldName);
             Thread.Sleep(1000);
             base.Dispatcher.Invoke(new Action(delegate ()
             {
-                //IEnumerator enumerator = PanelTest.Children.GetEnumerator();
                 var elements = PanelTest.Children;
 
                 for (int i = elements.Count - 1; i >= 0; i--)
@@ -127,31 +141,24 @@ namespace AddLdPlayerToWPF
                         }));
                     }
                 }
-
-                //while (enumerator.MoveNext())
-                //{
-                //    WindowsFormsHost item = (WindowsFormsHost)enumerator.Current;
-                //    bool flag2 = item.Name == ldName.Replace("-", "");
-                //    if (flag2)
-                //    {
-                //        PanelTest.Dispatcher.Invoke(new Action(delegate ()
-                //        {
-                //            PanelTest.Children.Remove(item);
-                //        }));
-                //    }
-                //}
             }));
 
-            Thread.Sleep(5000);
+            Thread.Sleep(1000);
             OpenLD(ldName);
-            Thread.Sleep(5000);
-            var data = LDPlayer.GetDevices2Running();
-            foreach (var item in data)
-            {
-                Console.WriteLine(item.Index);
-                Console.WriteLine(item.Name);
-            }
+            var device = LDPlayer.GetDevices2();
+            var deviceF = device.Find(x => x.name == ldName);
+            CommonFuntion.CheckLDRunning(deviceF.index, LDPlayer.PathLD);
+
+            string path = @"E:\Tool\ToolRegFB\AddLdPlayerToWPF\bin\Debug\InstallApp\fb.apk";
+            newAccount.Notify("Uninstalling Facebook...");
+            LDPlayer.UninstallApp(LDType.Name,ldName, "com.facebook.katana");
+
+            newAccount.Notify("Installing Facebook...");
+            Thread.Sleep(3000);
+            LDPlayer.InstallAppFile(LDType.Name, ldName, path);
+            Thread.Sleep(1000000);
         }
+
 
         private void OpenLD(string ldName)
         {
@@ -163,7 +170,7 @@ namespace AddLdPlayerToWPF
                 if (!ldList.Select(x => x.Name).Contains(ldName))
                 {
                     LDPlayer.Copy(ldName, "LDPlayer_Core");
-                    Thread.Sleep(10000);
+                    Thread.Sleep(1000);
                 }
 
                 LDPlayer.Open(LDType.Name, ldName);
@@ -190,11 +197,12 @@ namespace AddLdPlayerToWPF
                 panel.Size = new System.Drawing.Size(targetWidth, targetHeight);
                 SetParent(ldplayerHandle, panel.Handle);
                 windowsFormsHost.Child = panel;
-                windowsFormsHost.Height = targetHeight + 100;
-                windowsFormsHost.Width = targetWidth + 50;
-                windowsFormsHost.Name = ldName.Replace("-","");
+                windowsFormsHost.Height = targetHeight;
+                windowsFormsHost.Width = targetWidth;
+                windowsFormsHost.Name = ldName.Replace("-", "");
                 MoveWindow(ldplayerHandle, -1, -36, targetWidth, targetHeight, true);
                 PanelTest.Children.Add(windowsFormsHost);
+                Console.WriteLine(Process.GetCurrentProcess().Threads.Count);
             }));
         }
 
@@ -223,6 +231,5 @@ namespace AddLdPlayerToWPF
             240,
             395
         };
-
     }
 }
