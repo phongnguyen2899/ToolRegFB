@@ -63,8 +63,8 @@ namespace AddLdPlayerToWPF
 
         public void initLd()
         {
-            LDPlayer.PathLD = @"E:\Tool\LDPlayer\LDPlayer9\ldconsole.exe";
-            KAutoHelper.ADBHelper.SetADBFolderPath(@"E:\Tool\LDPlayer\LDPlayer9");
+            LDPlayer.PathLD = @"D:\work\devops\HTTTN\tool\LDPlayer\ldconsole.exe";
+            KAutoHelper.ADBHelper.SetADBFolderPath(@"D:\work\devops\HTTTN\tool\LDPlayer");
             //LDPlayer.Open(LDType.Name, "LDPlayer");
             //await Task.Delay(1000);
             //LDPlayer.Open(LDType.Name, "LDPlayer-1");
@@ -149,14 +149,40 @@ namespace AddLdPlayerToWPF
             var deviceF = device.Find(x => x.name == ldName);
             CommonFuntion.CheckLDRunning(deviceF.index, LDPlayer.PathLD);
 
-            string path = @"E:\Tool\ToolRegFB\AddLdPlayerToWPF\bin\Debug\InstallApp\fb.apk";
-            newAccount.Notify("Uninstalling Facebook...");
-            LDPlayer.UninstallApp(LDType.Name,ldName, "com.facebook.katana");
-
-            newAccount.Notify("Installing Facebook...");
-            Thread.Sleep(3000);
+            string path = @"D:\work\devops\HTTTN\tool\ToolRegFB\AddLdPlayerToWPF\bin\Debug\InstallApp\fb.apk";
+            newAccount.Status = "Uninstalling Facebook...";
+            LDPlayer.UninstallApp(LDType.Name, ldName, "com.facebook.lite");
+            Thread.Sleep(8000);
+            newAccount.Status = "Installing Facebook...";
             LDPlayer.InstallAppFile(LDType.Name, ldName, path);
-            Thread.Sleep(1000000);
+            Thread.Sleep(3000);
+            CommonFuntion.CheckAppInstalled(ldName, "com.facebook.lite");
+            newAccount.Status = "Facebook Installed";
+            Thread.Sleep(1000);
+            newAccount.Status = "Accept Permission Facebook...";
+            newAccount.Status = LDPlayer.Adb(LDType.Name, ldName, "shell  pm grant com.facebook.lite android.permission.READ_CONTACTS");
+            Thread.Sleep(100);
+            newAccount.Status = LDPlayer.Adb(LDType.Name, ldName, "shell  pm grant com.facebook.lite android.permission.CALL_PHONE");
+            Thread.Sleep(100);
+            newAccount.Status = LDPlayer.Adb(LDType.Name, ldName, "shell  pm grant com.facebook.lite android.permission.CAMERA", 0);
+            Thread.Sleep(100);
+            newAccount.Status = LDPlayer.Adb(LDType.Name, ldName, "shell  pm grant com.facebook.lite android.permission.ACCESS_FINE_LOCATION");
+            Thread.Sleep(100);
+            LDPlayer.Adb(LDType.Name, ldName, "shell  pm grant com.facebook.lite android.permission.READ_EXTERNAL_STORAGE");
+            Thread.Sleep(100);
+
+            newAccount.Status = "Clear Data Facebook...";
+            LDPlayer.Adb(LDType.Name, ldName, "shell  pm clear com.facebook.lite");
+            Thread.Sleep(5000);
+            newAccount.Status = "Mở App Facebook";
+            LDPlayer.RunApp(LDType.Name, ldName, "com.facebook.lite");
+            for (int k = 10; k > 0; k--)
+            {
+                newAccount.Status = $"Mở App Facebook - {k.ToString()}";
+                Thread.Sleep(1000);
+            }
+
+            Thread.Sleep(6000);
         }
 
 

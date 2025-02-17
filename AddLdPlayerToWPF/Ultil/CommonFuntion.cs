@@ -1,4 +1,5 @@
 ﻿using Auto_LDPlayer;
+using Auto_LDPlayer.Enums;
 using Emgu.CV.Flann;
 using System;
 using System.Collections.Generic;
@@ -50,6 +51,29 @@ namespace AddLdPlayerToWPF.Ultil
                     break;
                 }
                 Thread.Sleep(2000);
+                num++;
+                bool flag2 = num == 30;
+                if (flag2)
+                {
+                    goto Block_2;
+                }
+            }
+            return true;
+        Block_2:
+            return false;
+        }
+
+        public static bool CheckAppInstalled(string ldName, string appPackage)
+        {
+            int num = 0;
+            for (; ; )
+            {
+                var text = LDPlayer.Adb(LDType.Name, ldName, $"shell pm list packages | grep {appPackage}");
+                if (text.Contains(appPackage))
+                {
+                    break;
+                }
+                Thread.Sleep(1000);
                 num++;
                 bool flag2 = num == 30;
                 if (flag2)
