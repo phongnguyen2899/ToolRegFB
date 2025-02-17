@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -38,6 +39,8 @@ namespace AddLdPlayerToWPF
     /// FB: https://www.facebook.com/luyen.tranduy.56/
     public partial class MainWindow : Window
     {
+        Bitmap TOP_UP_BMP;
+
         [DllImport("user32")] private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
         [DllImport("user32")] private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
         [DllImport("user32")] private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
@@ -59,12 +62,13 @@ namespace AddLdPlayerToWPF
             initLd();
             AccountList = new ObservableCollection<Account>();
             dtgData.ItemsSource = AccountList;
+            TOP_UP_BMP = (Bitmap)Bitmap.FromFile("Images/fblite/btntaomoi.png");
         }
 
         public void initLd()
         {
-            LDPlayer.PathLD = @"D:\work\devops\HTTTN\tool\LDPlayer\ldconsole.exe";
-            KAutoHelper.ADBHelper.SetADBFolderPath(@"D:\work\devops\HTTTN\tool\LDPlayer");
+            LDPlayer.PathLD = @"E:\Tool\LDPlayer\LDPlayer9\ldconsole.exe";
+            KAutoHelper.ADBHelper.SetADBFolderPath(@"E:\Tool\LDPlayer\LDPlayer9\LDPlayer");
             //LDPlayer.Open(LDType.Name, "LDPlayer");
             //await Task.Delay(1000);
             //LDPlayer.Open(LDType.Name, "LDPlayer-1");
@@ -149,7 +153,7 @@ namespace AddLdPlayerToWPF
             var deviceF = device.Find(x => x.name == ldName);
             CommonFuntion.CheckLDRunning(deviceF.index, LDPlayer.PathLD);
 
-            string path = @"D:\work\devops\HTTTN\tool\ToolRegFB\AddLdPlayerToWPF\bin\Debug\InstallApp\fb.apk";
+            string path = @"E:\Tool\ToolRegFB\AddLdPlayerToWPF\bin\Debug\InstallApp\fblite.apk";
             newAccount.Status = "Uninstalling Facebook...";
             LDPlayer.UninstallApp(LDType.Name, ldName, "com.facebook.lite");
             Thread.Sleep(8000);
@@ -182,6 +186,8 @@ namespace AddLdPlayerToWPF
                 Thread.Sleep(1000);
             }
 
+            chooseTaoMoi(ldName, 0);
+
             Thread.Sleep(6000);
         }
 
@@ -190,8 +196,8 @@ namespace AddLdPlayerToWPF
         {
             PanelTest.Dispatcher.Invoke(new Action(delegate ()
             {
-                int targetWidth = 270;
-                int targetHeight = 480;
+                int targetWidth = 233;
+                int targetHeight = 370;
                 var ldList = LDPlayer.GetDevices2();
                 if (!ldList.Select(x => x.Name).Contains(ldName))
                 {
@@ -226,7 +232,7 @@ namespace AddLdPlayerToWPF
                 windowsFormsHost.Height = targetHeight;
                 windowsFormsHost.Width = targetWidth;
                 windowsFormsHost.Name = ldName.Replace("-", "");
-                MoveWindow(ldplayerHandle, -1, -36, targetWidth, targetHeight, true);
+                MoveWindow(ldplayerHandle, -17, -35, targetWidth, targetHeight, true);
                 PanelTest.Children.Add(windowsFormsHost);
                 Console.WriteLine(Process.GetCurrentProcess().Threads.Count);
             }));
@@ -247,6 +253,11 @@ namespace AddLdPlayerToWPF
                 }
             }
             return hWnd;
+        }
+
+        public bool chooseTaoMoi(string ldName, int kiemtra)
+        {
+            return LDPlayer.TapImg(LDType.Name, ldName, TOP_UP_BMP);
         }
         public int[] LDSize = new int[]
         {
