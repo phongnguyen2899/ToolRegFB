@@ -67,8 +67,8 @@ namespace AddLdPlayerToWPF
 
         public void initLd()
         {
-            LDPlayer.PathLD = @"E:\Tool\LDPlayer\LDPlayer9\ldconsole.exe";
-            KAutoHelper.ADBHelper.SetADBFolderPath(@"E:\Tool\LDPlayer\LDPlayer9\LDPlayer");
+            LDPlayer.PathLD = @"D:\work\devops\HTTTN\tool\LDPlayer\ldconsole.exe";
+            KAutoHelper.ADBHelper.SetADBFolderPath(@"D:\work\devops\HTTTN\tool\LDPlayer");
             //LDPlayer.Open(LDType.Name, "LDPlayer");
             //await Task.Delay(1000);
             //LDPlayer.Open(LDType.Name, "LDPlayer-1");
@@ -76,15 +76,8 @@ namespace AddLdPlayerToWPF
 
         private void BtnTest_Click1(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                LDPlayer.Open(LDType.Name, "LDPlayer_Core");
-                LDPlayer.Copy("LDPlayer_1", "LDPlayer_Core");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
+            LDView l = new LDView();
+            l.Show();
         }
 
         private void BtnTest_Click(object sender, RoutedEventArgs e)
@@ -153,7 +146,7 @@ namespace AddLdPlayerToWPF
             var deviceF = device.Find(x => x.name == ldName);
             CommonFuntion.CheckLDRunning(deviceF.index, LDPlayer.PathLD);
 
-            string path = @"E:\Tool\ToolRegFB\AddLdPlayerToWPF\bin\Debug\InstallApp\fblite.apk";
+            string path = @"D:\work\devops\HTTTN\tool\ToolRegFB\AddLdPlayerToWPF\bin\Debug\InstallApp\fblite.apk";
             newAccount.Status = "Uninstalling Facebook...";
             LDPlayer.UninstallApp(LDType.Name, ldName, "com.facebook.lite");
             Thread.Sleep(8000);
